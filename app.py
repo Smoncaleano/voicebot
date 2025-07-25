@@ -5,7 +5,7 @@ import time
 import os
 
 app = Flask(__name__)
-WEBHOOK_SECRET = "wsec_f7fcd4e4321109c47e987b21a158c60b27b345e2082c5ec0a8dd9e072d10a704"
+WEBHOOK_SECRET = "wsec_6a0f5200bd1f70fda6095b38f35c3c3cd7562bfed39a44c5df1873a554f4d63a"
 
 @app.route("/post_call_webhook", methods=["POST"])
 def post_call_webhook():
