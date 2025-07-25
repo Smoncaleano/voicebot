@@ -3,6 +3,12 @@ import hmac
 from hashlib import sha256
 import time
 import os
+import sys
+
+# Guardar logs en logs.txt
+log_file = open("logs.txt", "a")
+sys.stdout = log_file
+sys.stderr = log_file
 
 app = Flask(__name__)
 WEBHOOK_SECRET = "wsec_6a0f5200bd1f70fda6095b38f35c3c3cd7562bfed39a44c5df1873a554f4d63a"
@@ -45,7 +51,6 @@ def post_call_webhook():
         print(f"Call ended. Conversation {conversation_id}")
     elif event_type == "post_call_audio":
         conversation_id = data.get("conversation_id")
-        audio_b64 = data.get("full_audio")
         print(f"Received audio for conversation {conversation_id}")
     else:
         print(f"Unknown event type: {event_type}")
@@ -53,4 +58,4 @@ def post_call_webhook():
     return {"status": "received"}
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.getenv("PORT", 8080)))
+    app.run(host="0.0.0.0", port=int(os.getenv("PORT", 8080)), debug=True)
