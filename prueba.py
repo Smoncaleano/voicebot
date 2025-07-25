@@ -6,7 +6,7 @@ import os
 import uvicorn
 
 app = FastAPI()
-WEBHOOK_SECRET = "wsec_aff677bb3db0de80e2569001cec21cc634cee38a4326b568f6eb77190c53b733"
+WEBHOOK_SECRET = "wsec_c096fa0d0b3c64207b6707bf4927dc67030870e29c0116a96e5a85e113eda933"
 
 @app.post("/post_call_webhook")
 async def post_call_webhook(request: Request):
