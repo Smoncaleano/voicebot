@@ -1,17 +1,26 @@
-from flask import Flask, request, abort
+from flask import Flask, jsonify, request, abort
 import hmac
 from hashlib import sha256
 import time
 import os
 import sys
+from dotenv import load_dotenv
+
+from LLM.evaluate_llm import evaluate_transcript_with_gemini
+from service.save_analysis_service import get_conversations, insert_call_event
+
+load_dotenv()
 
 # Guardar logs en logs.txt
-log_file = open("logs.txt", "a")
-sys.stdout = log_file
-sys.stderr = log_file
 
 app = Flask(__name__)
-WEBHOOK_SECRET = "wsec_6a0f5200bd1f70fda6095b38f35c3c3cd7562bfed39a44c5df1873a554f4d63a"
+WEBHOOK_SECRET = os.getenv("WEBHOOK_SECRET")
+
+
+
+@app.route("/calls", methods=["GET"])
+def list_calls():
+    return jsonify(get_conversations())
 
 @app.route("/post_call_webhook", methods=["POST"])
 def post_call_webhook():
@@ -46,8 +55,9 @@ def post_call_webhook():
     data = body.get("data")
 
     if event_type == "post_call_transcription":
+        insert_call_event(data, event_type)
         conversation_id = data.get("conversation_id")
-        transcript = data.get("transcript")
+        evaluate_transcript_with_gemini(data.get("transcript"), conversation_id)
         print(f"Call ended. Conversation {conversation_id}")
     elif event_type == "post_call_audio":
         conversation_id = data.get("conversation_id")
